@@ -50,7 +50,7 @@ function AdminPanel() {
     
     try {
       await register(
-        { name, email, password, role: isAdmin ? 'admin' : 'user' },
+        { name, email, password, role: isAdmin ? 'ADMIN' : 'USER' },
         true // This indicates we're creating from admin panel
       );
       
@@ -225,7 +225,7 @@ function AdminPanel() {
                         <td className="py-2 px-4 border-b">{user.name || 'N/A'}</td>
                         <td className="py-2 px-4 border-b">{user.email}</td>
                         <td className="py-2 px-4 border-b">
-                          {user.role === 'admin' ? 'Administrator' : 'User'}
+                          {user.role === 'ADMIN' ? 'Administrator' : 'User'}
                         </td>
                         <td className="py-2 px-4 border-b space-x-2">
                           <button

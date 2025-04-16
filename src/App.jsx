@@ -1,3 +1,4 @@
+// Tambahkan di App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Login from './pages/Login';
@@ -5,10 +6,13 @@ import Register from './pages/Register';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
+import UserPhotoPage from './components/UserPhotoPage';
 import Navbar from './components/Navbar';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
+import Explore from './pages/Explore';
+import UserPhotos from './pages/UserPhotos';
 
 function App() {
   return (
@@ -35,6 +39,8 @@ function App() {
                   <AdminPanel />
                 </AdminRoute>
               } />
+              <Route path="/user/:userId" element={<UserPhotos />} />
+              <Route path="/explore" element={<Explore />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </div>

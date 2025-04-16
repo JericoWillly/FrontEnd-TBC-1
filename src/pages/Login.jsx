@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
+  // const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login, error } = useAuth();
   const navigate = useNavigate();
@@ -17,15 +17,11 @@ function Login() {
     setLoading(true);
     
     try {
-      // Pass isAdmin flag to login function
-      const success = await login(email, password, isAdmin);
-      if (success) {
-        // Navigate to admin panel if it's an admin login
-        if (isAdmin) {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
+      const success = await login(email, password);
+      if (success.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/');
       }
     } catch (err) {
       console.error('Login failed:', err);
@@ -67,19 +63,6 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
-        
-        <div className="mb-6 flex items-center">
-          <input
-            id="adminLogin"
-            type="checkbox"
-            className="mr-2"
-            checked={isAdmin}
-            onChange={(e) => setIsAdmin(e.target.checked)}
-          />
-          <label htmlFor="adminLogin" className="text-gray-700">
-            Login as Administrator
-          </label>
         </div>
         
         <button

@@ -35,15 +35,26 @@ export function AuthProvider({ children }) {
     }
   }
 
-  async function login(email, password, isAdmin = false) {
+  async function login(email, password) {
     try {
       setError('');
       // Use specific admin login endpoint if isAdmin is true
-      const endpoint = isAdmin ? '/auth/login/admin' : '/auth/login';
-      const response = await api.post(endpoint, { email, password });
+      const response = await api.post("/auth/login", { email, password });
       localStorage.setItem('token', response.data.token);
       await fetchUserProfile();
-      return true;
+      if (response.data.user.role === "ADMIN") {
+        return (
+          {
+            'isAdmin': true
+          }
+        )
+      } else {
+        return (
+          {
+            'isAdmin': false
+          }
+        );
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError(err.response?.data?.message || 'Failed to login');
@@ -55,7 +66,7 @@ export function AuthProvider({ children }) {
     try {
       setError('');
       // Use specific admin register endpoint if isAdmin is true
-      const endpoint = isAdmin ? '/auth/register/admin' : '/auth/register';
+      const endpoint ='/auth/register';
       const response = await api.post(endpoint, userData);
       
       // If registering a new user as admin (not creating a new admin)
@@ -83,7 +94,7 @@ export function AuthProvider({ children }) {
     register,
     logout,
     error,
-    isAdmin: currentUser?.role === 'admin'
+    isAdmin: currentUser?.role === 'ADMIN'
   };
 
   return (

@@ -39,25 +39,37 @@ api.interceptors.response.use(
 
 export default api;
 
-// Photo service functions
 export const photoService = {
-  getUserPhotos: async (userId) => {
-    return await api.get(`/photos/user/${userId}`);
-  },
-  getMyPhotos: async () => {
-    return await api.get('/photos/me');
-  },
-  uploadPhoto: async (formData) => {
-    return await api.post('/photos', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
-  deletePhoto: async (photoId) => {
-    return await api.delete(`/photos/${photoId}`);
-  }
-};
+    // Ganti getUserPhotos agar pakai endpoint yang baru dan sesuai dengan UserPhotos.js
+    getUserPhotos: async (userId) => {
+      return await api.get(`/photos/user/${userId}`); // Perbaiki penggunaan template literal
+    },
+  
+    // Ganti getTopPhotosByUsers sesuai dengan Explore.js
+    getTopPhotosByUsers: async (page = 1) => {
+      return await api.get(`/photos?page=${page}`); // Perbaiki penggunaan template literal
+    },
+  
+    // Sisanya tetap
+    getMyPhotos: async () => {
+      return await api.get('/photos/me');
+    },
+  
+    uploadPhoto: async (formData) => {
+      return await api.post('/photos', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    },
+  
+    deletePhoto: async (photoId) => {
+      return await api.delete(`/photos/${photoId}`);
+    }
+  };
+  
+  
+
 
 // User service functions
 export const userService = {

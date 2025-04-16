@@ -15,12 +15,13 @@ function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="text-xl font-bold">
-            Image Hosting
+            TBC-A
           </Link>
 
           {currentUser ? (
             <div className="flex items-center space-x-4">
               <Link to="/" className="hover:text-blue-200">Home</Link>
+              <Link to="/explore" className="hover:text-blue-200">Explore</Link>
               <Link to="/profile" className="hover:text-blue-200">Profile</Link>
               {isAdmin && (
                 <Link to="/admin" className="hover:text-blue-200">Admin Panel</Link>
