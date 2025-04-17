@@ -60,7 +60,7 @@ function UserPhotos() {
                 key={photo.id}
                 src={`https://image-hosting.kuncipintu.my.id${photo.url}`}
                 alt={photo.title || "Photo"}
-                className="w-full h-40 object-cover rounded"
+                className="w-full aspect-[4/3] object-cover rounded bg-gray-100"
               />
             ))}
           </div>
