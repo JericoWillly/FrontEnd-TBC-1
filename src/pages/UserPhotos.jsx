@@ -1,51 +1,55 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import photoService from '../services/photoService';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import photoService from "../services/photoService";
 
 function UserPhotos() {
   const { userId } = useParams();
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState("");
+  // const [page, setPage] = useState(1);
+  // const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     const fetchUserPhotos = async () => {
       setLoading(true);
-      setError('');
+      setError("");
       try {
-        const res = await photoService.getUserPhotos(userId, page);
-        const newPhotos = res.data?.data || [];
+        const res = await photoService.getUserPhotos(userId);
+        const newPhotos = res.data || [];
 
-        if (page === 1) {
-          setPhotos(newPhotos);
-        } else {
-          setPhotos((prev) => [...prev, ...newPhotos]);
-        }
+        console.log("newPhotos", newPhotos);
+        setPhotos(newPhotos);
 
-        setHasMore(newPhotos.length > 0);
+        // if (page === 1) {
+        //   setPhotos(newPhotos);
+        // } else {
+        //   setPhotos((prev) => [...prev, ...newPhotos]);
+        // }
+
+        // setHasMore(newPhotos.length > 0);
       } catch (err) {
-        console.error('Error fetching user photos:', err);
-        setError('Gagal mengambil foto.');
+        console.error("Error fetching user photos:", err);
+        setError("Gagal mengambil foto.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserPhotos();
-  }, [userId, page]);
+  }, [userId]);
 
-  const loadMore = () => {
-    if (hasMore) setPage((prev) => prev + 1);
-  };
+  // const loadMore = () => {
+  //   if (hasMore) setPage((prev) => prev + 1);
+  // };
 
-  if (loading && page === 1) return <div className="text-center p-6">Loading...</div>;
+  if (loading) return <div className="text-center p-6">Loading...</div>;
   if (error) return <div className="text-red-500 text-center p-6">{error}</div>;
 
   return (
     <div className="p-6">
       <h2 className="text-xl font-bold mb-4">All Photos by User</h2>
+
       {photos.length === 0 ? (
         <p className="text-gray-500">User belum mengunggah foto.</p>
       ) : (
@@ -55,13 +59,13 @@ function UserPhotos() {
               <img
                 key={photo.id}
                 src={`https://image-hosting.kuncipintu.my.id${photo.url}`}
-                alt={photo.title || 'Photo'}
+                alt={photo.title || "Photo"}
                 className="w-full h-40 object-cover rounded"
               />
             ))}
           </div>
 
-          {hasMore && (
+          {/* {hasMore && (
             <div className="text-center mt-6">
               <button
                 onClick={loadMore}
@@ -70,7 +74,7 @@ function UserPhotos() {
                 Load More
               </button>
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>
