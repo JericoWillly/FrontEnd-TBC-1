@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { userService, photoService } from '../services/api';
@@ -46,21 +45,18 @@ function Profile() {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    
     if (password && password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     setUpdateLoading(true);
     setError('');
     setSuccess('');
-    
+
     const updateData = { name, email };
-    if (password) {
-      updateData.password = password;
-    }
-    
+    if (password) updateData.password = password;
+
     try {
       await userService.updateProfile(updateData);
       setSuccess('Profile updated successfully');
@@ -80,25 +76,22 @@ function Profile() {
 
   const handleProfilePicUpload = async (e) => {
     e.preventDefault();
-    
     if (!profilePicture) {
       setError('Please select a profile picture');
       return;
     }
-    
+
     setUploadingProfilePic(true);
     setError('');
     setSuccess('');
-    
+
     const formData = new FormData();
     formData.append('profilePicture', profilePicture);
-    
+
     try {
       await userService.updateProfilePicture(formData);
       setSuccess('Profile picture updated successfully');
-      
-      // Refresh user profile
-      await userService.getProfile();
+      await userService.getProfile(); // Refresh user data
     } catch (err) {
       console.error('Profile picture update failed:', err);
       setError(err.response?.data?.message || 'Failed to update profile picture');
@@ -113,33 +106,28 @@ function Profile() {
 
   const handlePhotoUpload = async (e) => {
     e.preventDefault();
-    
     if (!selectedFile) {
       setError('Please select a file to upload');
       return;
     }
-    
+
     setUploading(true);
     setError('');
     setSuccess('');
-    
+
     const formData = new FormData();
     formData.append('photo', selectedFile);
-    
+
     try {
       await photoService.uploadPhoto(formData);
       setSuccess('Photo uploaded successfully');
       setSelectedFile(null);
-      
-      // Refresh photos after upload
+
       const response = await photoService.getMyPhotos();
       setPhotos(response.data);
-      
-      // Reset file input
+
       const fileInput = document.getElementById('photo-upload');
-      if (fileInput) {
-        fileInput.value = '';
-      }
+      if (fileInput) fileInput.value = '';
     } catch (err) {
       console.error('Photo upload failed:', err);
       setError(err.response?.data?.message || 'Failed to upload photo');
@@ -160,168 +148,143 @@ function Profile() {
   };
 
   return (
-    <div className="mb-10">
-      <h1 className="text-3xl font-bold mb-6">My Profile</h1>
-      
+    <div className="mt-24 mb-10 px-4 max-w-6xl mx-auto">
+      <h1 className="text-4xl font-bold mb-8 text-center">My Profile</h1>
+
       {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
       {success && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{success}</div>}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         <div>
-          {/* Profile Information Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 className="text-xl font-bold mb-4">Profile Information</h2>
-            
+          {/* Profile Info */}
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Profile Information</h2>
             <form onSubmit={handleProfileUpdate}>
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2" htmlFor="name">
-                  Name
-                </label>
+                <label htmlFor="name" className="block text-gray-700 mb-1">Name</label>
                 <input
                   id="name"
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
-              
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2" htmlFor="email">
-                  Email
-                </label>
+                <label htmlFor="email" className="block text-gray-700 mb-1">Email</label>
                 <input
                   id="email"
                   type="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
-              
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2" htmlFor="password">
-                  Password (leave blank to keep current)
-                </label>
+                <label htmlFor="password" className="block text-gray-700 mb-1">Password (optional)</label>
                 <input
                   id="password"
                   type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
-              
               <div className="mb-6">
-                <label className="block text-gray-700 mb-2" htmlFor="confirmPassword">
-                  Confirm Password
-                </label>
+                <label htmlFor="confirmPassword" className="block text-gray-700 mb-1">Confirm Password</label>
                 <input
                   id="confirmPassword"
                   type="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={!password}
+                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
-              
               <button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 disabled={updateLoading}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200"
               >
                 {updateLoading ? 'Updating...' : 'Update Profile'}
               </button>
             </form>
           </div>
-          
-          {/* Profile Picture Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 className="text-xl font-bold mb-4">Profile Picture</h2>
-            
+
+          {/* Profile Picture */}
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Profile Picture</h2>
             {currentUser?.profile_picture && (
               <div className="mb-4 flex justify-center">
                 <img
                   src={`https://image-hosting.kuncipintu.my.id${currentUser.profilePicture}`}
                   alt="Profile"
-                  className="w-32 h-32 object-cover rounded-full border-2 border-gray-200"
+                  className="w-32 h-32 object-cover rounded-full border-4 border-blue-300 shadow-md"
                 />
               </div>
             )}
-            
             <form onSubmit={handleProfilePicUpload}>
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2" htmlFor="profile-pic">
-                  Select New Profile Picture
-                </label>
+                <label htmlFor="profile-pic" className="block text-gray-700 mb-1">Select New Picture</label>
                 <input
                   id="profile-pic"
                   type="file"
                   accept="image/*"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                   onChange={handleProfilePicChange}
                   required
+                  className="w-full px-3 py-2 border border-gray-300 rounded"
                 />
               </div>
-              
               <button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 disabled={uploadingProfilePic}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200"
               >
-                {uploadingProfilePic ? 'Uploading...' : 'Update Profile Picture'}
+                {uploadingProfilePic ? 'Uploading...' : 'Update Picture'}
               </button>
             </form>
           </div>
-          
-          {/* Upload Photo Section */}
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Upload Photo</h2>
-            
+
+          {/* Upload Photo */}
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+            <h2 className="text-2xl font-semibold mb-4">Upload Photo</h2>
             <form onSubmit={handlePhotoUpload}>
               <div className="mb-4">
-                <label className="block text-gray-700 mb-2" htmlFor="photo-upload">
-                  Select Photo
-                </label>
+                <label htmlFor="photo-upload" className="block text-gray-700 mb-1">Select Photo</label>
                 <input
                   id="photo-upload"
                   type="file"
                   accept="image/*"
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                   onChange={handleFileChange}
                   required
+                  className="w-full px-3 py-2 border border-gray-300 rounded"
                 />
               </div>
-              
               <button
                 type="submit"
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 disabled={uploading}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200"
               >
                 {uploading ? 'Uploading...' : 'Upload Photo'}
               </button>
             </form>
           </div>
         </div>
-        
-        {/* My Photos Section */}
+
+        {/* My Photos */}
         <div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">My Photos</h2>
-            
+          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+            <h2 className="text-2xl font-semibold mb-4">My Photos</h2>
             {loading ? (
-              <div className="text-center py-8">
-                <p className="text-gray-600">Loading photos...</p>
-              </div>
+              <div className="text-center py-8 text-gray-500">Loading photos...</div>
             ) : photos.length > 0 ? (
               <ImageGrid photos={photos} onDelete={handleDeletePhoto} />
             ) : (
-              <div className="text-center py-8">
-                <p className="text-gray-600">No photos uploaded yet.</p>
-                <p className="text-gray-500 mt-2">Upload your first photo using the form on the left.</p>
+              <div className="text-center py-8 text-gray-500">
+                <p>No photos uploaded yet.</p>
+                <p className="text-sm mt-2">Upload your first photo using the form on the left.</p>
               </div>
             )}
           </div>
